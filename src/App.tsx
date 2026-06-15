@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AccommodationSection } from './components/AccommodationSection';
 import { 
   Flame, 
   MapPin, 
@@ -1672,85 +1673,10 @@ export default function App() {
                 </div>
               )}
 
-              {/* TAB 3: ACCOMMODATIONS FOR INTERACTIVE SWAPPING */}
+              {/* TAB 3: ACCOMMODATIONS */}
               {activeTab === 'stays' && (
                 <div className="space-y-6">
-                  <div className="flex justify-between items-end border-b border-white/10 pb-2">
-                    <div>
-                      <h3 className="text-2xl font-light italic serif text-white">Tropical Stays & Camps Lodgings</h3>
-                      <p className="text-xs text-white/50">Click on any resort tier below to swap. Your weekly package rates tally live.</p>
-                    </div>
-                    <span className="text-[10px] uppercase tracking-widest font-mono text-white/40">
-                      {availableAccommodations.length} properties
-                    </span>
-                  </div>
-
-                  <div className="space-y-6">
-                    {availableAccommodations.map((stay) => {
-                      const isCurrentlySelected = selectedAccommodation?.id === stay.id;
-                      return (
-                        <div 
-                          key={stay.id}
-                          onClick={() => setSelectedAccommodation(stay)}
-                          className={`group border transition-all duration-300 cursor-pointer flex flex-col md:flex-row justify-between overflow-hidden bg-[#1a1a1a] rounded-lg ${
-                            isCurrentlySelected 
-                              ? 'border-[#D4AF37] shadow-lg shadow-[#D4AF37]/5' 
-                              : 'border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          {/* Stay Image with responsive sizing */}
-                          <div className="w-full md:w-56 h-48 md:h-auto overflow-hidden relative flex-shrink-0">
-                            <img 
-                              src={stay.imageUrl || 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=80&w=800'} 
-                              alt={stay.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              referrerPolicy="no-referrer"
-                            />
-                            <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                              <span className="text-[9px] uppercase tracking-widest bg-black/70 backdrop-blur-sm px-2 py-0.5 text-cyan-300 font-mono rounded">
-                                {stay.comfortLevel}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="flex-1 p-6 space-y-3 flex flex-col justify-between">
-                            <div>
-                              <div className="flex flex-wrap gap-2 items-center mb-1.5">
-                                <span className="text-[9px] uppercase tracking-widest bg-[#f97316]/20 px-2 py-0.5 text-amber-500 font-bold rounded">
-                                  {stay.distanceToGym} from camp
-                                </span>
-                              </div>
-                              <h4 className="text-xl font-semibold text-white uppercase tracking-tight group-hover:text-[#D4AF37] transition">{stay.name}</h4>
-                              <p className="text-[10px] font-mono text-white/40">{stay.type}</p>
-                              <p className="text-xs text-white/70 font-light mt-2 leading-relaxed">{stay.description}</p>
-                            </div>
-                            
-                            <div className="flex flex-wrap gap-1.5 pt-2">
-                              {stay.features.map((feat, i) => (
-                                <span key={i} className="text-[10px] px-2 py-0.5 bg-white/5 border border-white/5 text-white/60 font-serif italic">
-                                  {feat}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="w-full md:w-40 flex flex-row md:flex-col justify-between items-end text-right border-t md:border-t-0 md:border-l border-white/10 p-6 md:pl-6 bg-black/[0.1]">
-                            <div>
-                              <p className="text-[9px] uppercase tracking-widest opacity-40 mb-1">Nightly Cost</p>
-                              <span className="text-2xl font-light italic serif text-[#D4AF37]">${stay.costPerNight}</span>
-                              <p className="text-[9px] text-white/50 mt-1 font-mono">${stay.costPerNight * 7} / week</p>
-                            </div>
-
-                            <button className={`text-[10px] uppercase font-bold tracking-widest w-full py-2 text-center border mt-4 transition duration-300 ${
-                              isCurrentlySelected ? 'bg-[#D4AF37] text-black border-[#D4AF37]' : 'border-white/20 text-white hover:bg-white/5'
-                            }`}>
-                              {isCurrentlySelected ? 'Selected' : 'Swap In'}
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <AccommodationSection />
                 </div>
               )}
 
