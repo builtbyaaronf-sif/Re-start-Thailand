@@ -2,13 +2,20 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase, getPhotoUrl } from '../../lib/supabase';
 import { useAuth, signOut } from '../../hooks/useAuth';
-import { Property, PropertyStatus } from '../../types';
+import { Property } from '../../types';
 
-const STATUS_STYLES: Record<PropertyStatus, string> = {
-  published: 'bg-green-900/40 text-green-400 border-green-800',
-  pending: 'bg-amber-900/40 text-amber-400 border-amber-800',
+const STATUS_STYLES: Record<string, string> = {
+  active: 'bg-green-900/40 text-green-400 border-green-800',
   draft: 'bg-zinc-800 text-zinc-400 border-zinc-700',
-  rejected: 'bg-red-900/40 text-red-400 border-red-800',
+  rented: 'bg-blue-900/40 text-blue-400 border-blue-800',
+  archived: 'bg-red-900/40 text-red-400 border-red-800',
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  active: 'Published',
+  draft: 'Draft',
+  rented: 'Rented',
+  archived: 'Archived',
 };
 
 export default function HostDashboard() {
@@ -16,6 +23,7 @@ export default function HostDashboard() {
   const { user, profile } = useAuth();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const [toggling, setToggling] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -31,9 +39,26 @@ export default function HostDashboard() {
   }, [user]);
 
   const getCover = (p: Property) => {
-    const photos = [...(p.property_photos ?? [])].sort((a, b) => a.order_index - b.order_index);
+    const photos = [...((p as any).property_photos ?? [])].sort(
+      (a: any, b: any) => a.order_index - b.order_index
+    );
     return photos[0] ? getPhotoUrl(photos[0].storage_path) : null;
   };
+
+  async function togglePublish(p: Property) {
+    const newStatus = p.status === 'active' ? 'draft' : 'active';
+    setToggling(p.id);
+    const { error } = await supabase
+      .from('properties')
+      .update({ status: newStatus })
+      .eq('id', p.id);
+    if (!error) {
+      setProperties(prev =>
+        prev.map(prop => prop.id === p.id ? { ...prop, status: newStatus } : prop)
+      );
+    }
+    setToggling(null);
+  }
 
   async function handleSignOut() {
     await signOut();
@@ -98,24 +123,15 @@ export default function HostDashboard() {
                 <div className="flex-1 py-4 pr-4 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-3 mb-1">
-                      <h2 className="text-white font-semibold">{p.title ?? `${p.area} ${p.property_type}`}</h2>
-                      <span className={`text-xs px-2 py-0.5 rounded-full border ${STATUS_STYLES[p.status]}`}>
-                        {p.status}
+                      <h2 className="text-white font-semibold">{p.name}</h2>
+                      <span className={`text-xs px-2 py-0.5 rounded-full border ${STATUS_STYLES[p.status] ?? STATUS_STYLES.draft}`}>
+                        {STATUS_LABELS[p.status] ?? p.status}
                       </span>
                     </div>
                     <div className="text-zinc-600 text-sm">
-                      {p.area} · {p.property_type}
-                      {p.price_eur ? ` · €${p.price_eur.toLocaleString()}/mo` : ''}
+                      {p.area} · {p.type}
+                      {p.price_monthly ? ` · ${p.price_monthly.toLocaleString()} THB/mo` : ''}
                     </div>
-                    {p.status === 'pending' && (
-                      <p className="text-amber-600 text-xs mt-1">⏳ Awaiting admin review before going live</p>
-                    )}
-                    {p.status === 'rejected' && (
-                      <p className="text-red-500 text-xs mt-1">✗ Listing was rejected — edit and resubmit</p>
-                    )}
-                    {p.facebook_posted_at && (
-                      <p className="text-blue-500 text-xs mt-1">📘 Posted to Facebook</p>
-                    )}
                   </div>
                   <div className="flex gap-3 mt-2">
                     <button
@@ -124,7 +140,18 @@ export default function HostDashboard() {
                     >
                       Edit
                     </button>
-                    {p.status === 'published' && (
+                    <button
+                      onClick={() => togglePublish(p)}
+                      disabled={toggling === p.id}
+                      className={`text-xs px-3 py-1.5 rounded-lg border transition-all disabled:opacity-40 ${
+                        p.status === 'active'
+                          ? 'text-red-400 border-red-800 hover:border-red-600'
+                          : 'text-green-400 border-green-800 hover:border-green-600'
+                      }`}
+                    >
+                      {toggling === p.id ? '...' : p.status === 'active' ? 'Unpublish' : 'Publish'}
+                    </button>
+                    {p.status === 'active' && (
                       <button
                         onClick={() => navigate(`/stays/${p.id}`)}
                         className="text-xs text-amber-500 hover:text-amber-400 border border-amber-800 hover:border-amber-600 px-3 py-1.5 rounded-lg transition-all"
