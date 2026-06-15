@@ -5,6 +5,7 @@ import { useAuth, signOut } from '../../hooks/useAuth';
 import { Property } from '../../types';
 
 const STATUS_STYLES: Record<string, string> = {
+  published: 'bg-green-900/40 text-green-400 border-green-800',
   active: 'bg-green-900/40 text-green-400 border-green-800',
   draft: 'bg-zinc-800 text-zinc-400 border-zinc-700',
   rented: 'bg-blue-900/40 text-blue-400 border-blue-800',
@@ -12,6 +13,7 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
+  published: 'Published',
   active: 'Published',
   draft: 'Draft',
   rented: 'Rented',
@@ -46,7 +48,8 @@ export default function HostDashboard() {
   };
 
   async function togglePublish(p: Property) {
-    const newStatus = p.status === 'active' ? 'draft' : 'active';
+    const isLive = p.status === 'published' || p.status === 'active';
+    const newStatus = isLive ? 'draft' : 'published';
     setToggling(p.id);
     const { error } = await supabase
       .from('properties')
@@ -144,14 +147,14 @@ export default function HostDashboard() {
                       onClick={() => togglePublish(p)}
                       disabled={toggling === p.id}
                       className={`text-xs px-3 py-1.5 rounded-lg border transition-all disabled:opacity-40 ${
-                        p.status === 'active'
+                        (p.status === 'published' || p.status === 'active')
                           ? 'text-red-400 border-red-800 hover:border-red-600'
                           : 'text-green-400 border-green-800 hover:border-green-600'
                       }`}
                     >
-                      {toggling === p.id ? '...' : p.status === 'active' ? 'Unpublish' : 'Publish'}
+                      {toggling === p.id ? '...' : (p.status === 'published' || p.status === 'active') ? 'Unpublish' : 'Publish'}
                     </button>
-                    {p.status === 'active' && (
+                    {(p.status === 'published' || p.status === 'active') && (
                       <button
                         onClick={() => navigate(`/stays/${p.id}`)}
                         className="text-xs text-amber-500 hover:text-amber-400 border border-amber-800 hover:border-amber-600 px-3 py-1.5 rounded-lg transition-all"
