@@ -1,0 +1,8 @@
+{
+  "name": "Re:start Thailand",
+  "description": "Custom Muay Thai training packages, flights, gyms, and accommodations in Phuket and Koh Samui tailored to your experience, budget, and comfort.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

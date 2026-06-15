@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Outfit:wght@200;300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-serif-editorial: "Cormorant Garamond", Georgia, serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-brand-red: #ea580c; /* bright physical red-orange */
+  --color-brand-cyan: #06b6d4; /* tropical pure cyan */
+  --color-brand-dark: #121212; /* deep slate black */
+  --color-gold-custom: #D4AF37; /* precious metallic gold */
+}
+
+/* Base resets & animations */
+body {
+  font-family: var(--font-sans);
+  background-color: #121212;
+  color: #fdfdfd;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .serif {
+  font-family: var(--font-serif-editorial), Georgia, serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-red);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f97316;
+}
+
+/* Breathing animation for recovery indicators */
+@keyframes softPulse {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.08); }
+}
+
+.animate-pulse-slow {
+  animation: softPulse 4s infinite ease-in-out;
+}
+
