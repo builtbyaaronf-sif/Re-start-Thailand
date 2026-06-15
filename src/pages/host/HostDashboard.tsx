@@ -49,7 +49,7 @@ export default function HostDashboard() {
 
   async function togglePublish(p: Property) {
     const isLive = p.status === 'published' || p.status === 'active';
-    const newStatus = isLive ? 'draft' : 'published';
+    const newStatus = isLive ? 'draft' : 'active';
     setToggling(p.id);
     const { error } = await supabase
       .from('properties')
