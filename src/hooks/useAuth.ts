@@ -21,16 +21,8 @@ export function useAuth(): AuthState {
   });
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        fetchProfile(session.user, session);
-      } else {
-        setState(s => ({ ...s, loading: false }));
-      }
-    });
-
-    // Listen for auth changes
+    // onAuthStateChange fires INITIAL_SESSION immediately on subscribe —
+    // no separate getSession() needed, which avoids a race condition.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         fetchProfile(session.user, session);
