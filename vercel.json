@@ -1,0 +1,5 @@
+{
+  "installCommand": "npm install --ignore-scripts && npm install @tailwindcss/oxide-linux-x64-gnu",
+  "buildCommand": "npx vite build",
+  "outputDirectory": "dist"
+}
