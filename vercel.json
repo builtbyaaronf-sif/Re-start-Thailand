@@ -1,5 +1,5 @@
 {
-  "installCommand": "npm install && npm install @tailwindcss/oxide-linux-x64-gnu@4.3.1 --no-save",
+  "installCommand": "npm install --ignore-optional && npm install @tailwindcss/oxide-linux-x64-gnu@4.3.1",
   "buildCommand": "npx vite build",
   "outputDirectory": "dist"
 }
