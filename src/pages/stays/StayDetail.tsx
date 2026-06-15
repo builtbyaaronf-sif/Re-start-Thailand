@@ -16,7 +16,7 @@ export default function StayDetail() {
       .from('properties')
       .select('*, property_photos(id, storage_path, order_index)')
       .eq('id', id)
-      .eq('status', 'published')
+      .in('status', ['active', 'published'])
       .single()
       .then(({ data }) => {
         setProperty(data as Property);

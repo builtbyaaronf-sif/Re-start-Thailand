@@ -22,7 +22,7 @@ export default function StaysBrowse() {
     let query = supabase
       .from('properties')
       .select('*, property_photos(storage_path, order_index)')
-      .eq('status', 'published')
+      .in('status', ['active', 'published'])
       .order('created_at', { ascending: false });
 
     if (area !== 'All') query = query.eq('area', area);
